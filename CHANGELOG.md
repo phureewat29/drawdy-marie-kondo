@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- The sidebar button and the panel's title bar show the extension's icon,
+  matching the extensions list.
+
 ## 0.1.1
 
 - New icon: a tidy box of sticky notes.
