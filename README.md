@@ -1,12 +1,16 @@
-# Sensemaker
+# Marie Kondo
 
 **Turn a wall of sticky notes into clear themes, in one click.**
 
-Sensemaker groups your notes by what they mean, finds notes by meaning, and
+Marie Kondo groups your notes by what they mean, finds notes by meaning, and
 spots the ones that say the same thing. It runs privately on your device, so
 your notes never leave your browser.
 
-![84 notes from a sprint retro slide into named groups, then a search for "who deserves thanks" finds the kudos notes](https://raw.githubusercontent.com/phureewat29/drawdy-sensemaker/main/.github/assets/demo.gif)
+![84 notes from a sprint retro slide into named groups, then a search for "who deserves thanks" finds the kudos notes](https://raw.githubusercontent.com/phureewat29/drawdy-marie-kondo/main/.github/assets/demo.gif)
+
+## How it works
+
+![1. Select your notes. 2. Press Group: the AI reads what each note means, privately in your browser. 3. Get named groups: notes slide into frames named CI, Meetings and Kudos, keeping their colours and text.](https://raw.githubusercontent.com/phureewat29/drawdy-marie-kondo/main/.github/assets/how-it-works.png)
 
 ## Made for
 
@@ -41,30 +45,22 @@ most.
 Select a note and press **Find similar** to select every note that says the
 same thing. Handy for cleaning up duplicates after a brainstorm.
 
-![Find similar on "API docs don't match the real endpoints" selects "API documentation is out of date", a 91% match](https://raw.githubusercontent.com/phureewat29/drawdy-sensemaker/main/.github/assets/similar.png)
-
 ## Getting started
 
 1. Click the **sparkles** button on the right edge of the board.
-2. The first time, Sensemaker asks to download its AI model (about 235 MB).
+2. The first time, Marie Kondo asks to download its AI model (about 235 MB).
    This happens once; after that it opens right away.
 3. On an empty board, press **Try with sample notes**, then **Group**.
 
-You can also right-click a selection and choose **Extension → Sensemaker**.
-
-## Private by design
-
-The AI runs on your device. Your notes, photos and searches never leave your
-browser. The model itself is the only thing Sensemaker downloads.
+You can also right-click a selection and choose **Extension → Marie Kondo**.
 
 ## Good to know
 
 - Fastest in an up-to-date Chrome, Edge or Safari. Other browsers work, but
   more slowly.
-- Group names appear in the Sensemaker panel. For now, Drawdy labels the
-  frames themselves "Frame 1", "Frame 2" and so on.
+- Each group's name shows on its frame and in the Marie Kondo panel.
 - Groups up to 1,000 notes at a time.
-- The first time you group photos, it downloads about 109 MB more.
+- To group photos, Marie Kondo will download about 109 MB more for the engine.
 
 ## Permissions
 
@@ -76,6 +72,6 @@ browser. The model itself is the only thing Sensemaker downloads.
 
 Powered by [EmbeddingGemma 2](https://huggingface.co/google/embeddinggemma-2)
 by Google DeepMind. Building or curious how it works? See the
-[developer guide](https://github.com/phureewat29/drawdy-sensemaker/blob/main/docs/development.md).
+[developer guide](https://github.com/phureewat29/drawdy-marie-kondo/blob/main/docs/development.md).
 
-MIT licensed.
+MIT licensed. Not affiliated with or endorsed by Marie Kondo or KonMari.

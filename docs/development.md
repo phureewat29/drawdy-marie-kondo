@@ -171,10 +171,6 @@ Node 24 without a build step.
 
 ## Limitations
 
-- **Frame names.** Group frames are named on creation (protocol 1.3), which
-  drawdy.io shows once it runs host commit `f37dafcb`; until then they read
-  "Frame 1…" and the group names are in the panel
-  ([details](drawdy-host-notes.md)).
 - Fastest with WebGPU (Chrome or Edge 113+, Safari 26+, Firefox 141+ on
   Windows); other browsers use a slower fallback.
 - The first run downloads about 235 MB, plus 109 MB the first time images are
@@ -198,7 +194,7 @@ Node 24 without a build step.
 ## Status
 
 Verified in Chrome 154 (Apple M3, WebGPU): grouping notes, photos, and both
-together, regrouping frames in place, search by meaning across English, Thai and
+together into named frames, regrouping frames in place, search by meaning across English, Thai and
 Japanese, find similar, sample notes, the one-time download and its reuse
 after reloads, and `npm run check`.
 Not yet verified: Safari, Firefox, and Drawdy's light theme.

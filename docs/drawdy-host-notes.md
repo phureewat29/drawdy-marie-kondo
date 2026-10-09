@@ -11,7 +11,7 @@ until 1.3 every frame an extension created was called "Frame N". Protocol
 1.3 and host commit `f37dafcb` fixed it: `name` on a new frame reaches
 `createFrame`, and `frameName` reads and renames a frame. Marie Kondo sends
 `name` on every frame it creates (`src/driver/frame.ts`), so group names
-show on the board once drawdy.io runs that commit.
+show on the board; drawdy.io has run that commit since 2026-10-09.
 
 One follow-up: a host from before 1.3 throws `Not exhaustive` when a driver
 asks `get-drawdy-elements` for a key it does not know, such as `frameName`.
