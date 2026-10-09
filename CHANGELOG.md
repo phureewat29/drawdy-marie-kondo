@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- A shorter description in the extensions list.
+
 ## 0.2.0
 
 - Marie Kondo is now **Janitor**: same icon, same features.
