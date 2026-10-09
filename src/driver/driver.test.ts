@@ -389,6 +389,8 @@ describe("board", () => {
         });
         const summary = await readBoardSummary(ddp);
         expect(summary.items).toBe(6);
+        // The notes' text, for search suggestions; images have none.
+        expect(summary.texts).toEqual(["fees", "late", "loose", "in a user frame"]);
         expect(summary.groups).toEqual([
             { frameId: "left", label: "Fees", count: 1 },
             { frameId: "right", label: "Delivery", count: 2 },

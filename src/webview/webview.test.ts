@@ -67,6 +67,26 @@ describe("panel", () => {
         expect(rows[1].querySelector(".copies")).toBeNull();
     });
 
+    it("suggests searches from the board's notes, and runs one when picked", () => {
+        const { post, panel, type } = setup();
+        expect(document.querySelectorAll("button.chip")).toHaveLength(0);
+        panel.dispatch({ type: "driver", message: { type: "suggestions", queries: ["meetings", "CI"] } });
+        const chips = () => [...document.querySelectorAll<HTMLButtonElement>("button.chip")];
+        expect(chips().map((c) => c.textContent)).toEqual(["meetings", "CI"]);
+
+        chips()[1].click();
+        expect((document.getElementById("query") as HTMLInputElement).value).toBe("CI");
+        jest.advanceTimersByTime(500);
+        expect(post).toHaveBeenCalledWith({ type: "search", query: "CI" });
+
+        // New suggestions wait while a search is showing.
+        panel.dispatch({ type: "driver", message: { type: "results", query: "CI", hits, ms: 12 } });
+        panel.dispatch({ type: "driver", message: { type: "suggestions", queries: ["tests"] } });
+        expect(document.querySelectorAll("button.hit")).toHaveLength(2);
+        type("");
+        expect(chips().map((c) => c.textContent)).toEqual(["tests"]);
+    });
+
     it("reveals and hovers hits through the driver", () => {
         const { post, panel, type } = setup();
         type("fees");

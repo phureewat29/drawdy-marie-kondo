@@ -240,3 +240,47 @@ export const writtenAs = (phrase: string, texts: readonly string[]): string => {
 /** A group name as the notes write it, with a capital first letter. */
 export const displayLabel = (phrase: string, texts: readonly string[]): string =>
     capitalize(writtenAs(phrase, texts));
+
+/**
+ * Searches to suggest for a board: phrases several of its notes share, most
+ * shared first, each about something different. A phrase is skipped when it
+ * shares a word with one already picked, or when most of its notes are
+ * already covered by one. Copies of a note count once. Plain text analysis,
+ * so it needs no model.
+ */
+export const suggestionsFor = (texts: readonly string[], count = 4): string[] => {
+    const notes = [...new Map(texts.map((t) => [t.replace(/\s+/g, " ").trim().toLowerCase(), t])).values()];
+    const labelable = (phrase: string) => phrase.includes(" ") || !WEAK.has(phrase);
+    const where = new Map<string, Set<number>>();
+    notes.forEach((text, i) => {
+        for (const phrase of phrasesOf(text).filter(labelable)) {
+            where.set(phrase, (where.get(phrase) ?? new Set()).add(i));
+        }
+    });
+    // A word that only ever appears inside a longer phrase is said better by it:
+    // "flaky tests" over "flaky".
+    const saidBetter = (phrase: string, found: Set<number>) =>
+        [...where.entries()].some(
+            ([longer, also]) => longer !== phrase && also.size === found.size && ` ${longer} `.includes(` ${phrase} `)
+        );
+    const ranked = [...where.entries()]
+        .filter(([phrase, found]) => found.size >= 2 && !saidBetter(phrase, found))
+        .map(([phrase, found]) => ({
+            phrase,
+            found,
+            // Singular and plural are one word here: "meeting" clashes with "meetings".
+            words: new Set(phrase.split(/[\s/-]+/).map((w) => w.replace(/(\p{L}{3}[^s])s$/u, "$1"))),
+            score: found.size * LENGTH_WEIGHT[Math.min(phrase.split(" ").length, 3) - 1],
+        }))
+        .sort((a, b) => b.score - a.score || a.phrase.localeCompare(b.phrase));
+    const picked = ranked.reduce<typeof ranked>((acc, c) => {
+        if (acc.length >= count) return acc;
+        const clashes = acc.some(
+            (p) =>
+                [...c.words].some((w) => p.words.has(w)) ||
+                [...c.found].filter((i) => p.found.has(i)).length >= c.found.size / 2
+        );
+        return clashes ? acc : [...acc, c];
+    }, []);
+    return picked.map((p) => writtenAs(p.phrase, notes));
+};

@@ -1,5 +1,6 @@
 import type { DriverModule, DriverSubscriptionEvent } from "@drawdy/driver-protocol";
 import { debounce, serial } from "../lib/fp.ts";
+import { suggestionsFor } from "../lib/labels.ts";
 import { ICONS } from "../shared/icons.ts";
 import type { ClusterSummary } from "../shared/protocol.ts";
 import { clusterSelection } from "./actions/cluster.ts";
@@ -96,10 +97,18 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
         legend = next;
         if (!same) ctx.tell({ type: "clusters", clusters: next });
     };
+    // Search suggestions follow the board too, from what its notes say.
+    let suggestions: string[] = [];
+    const showSuggestions = (next: string[]) => {
+        if (next.join("\n") === suggestions.join("\n")) return;
+        suggestions = next;
+        ctx.tell({ type: "suggestions", queries: next });
+    };
     const recountBoard = debounce(() => {
-        readBoardSummary(ddp).then(({ items, groups }) => {
+        readBoardSummary(ddp).then(({ items, groups, texts }) => {
             report({ items });
             showLegend(groups);
+            showSuggestions(suggestionsFor(texts));
         }, unreadable);
     }, 400);
 
@@ -191,6 +200,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
             case "ready":
                 if (setupDone !== null) ctx.tell({ type: "setup", needed: !setupDone });
                 if (legend.length > 0) ctx.tell({ type: "clusters", clusters: legend });
+                if (suggestions.length > 0) ctx.tell({ type: "suggestions", queries: suggestions });
                 recountSelection();
                 return recountBoard();
             case "search":

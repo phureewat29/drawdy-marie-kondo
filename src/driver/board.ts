@@ -155,17 +155,20 @@ export const framesLeftEmpty = async (ddp: Ddp, items: readonly BoardItem[]): Pr
 };
 
 /**
- * How many items the board has, and its groups: the frames Sensemaker made,
- * in reading order (top to bottom, then left to right), each with how many
- * items it holds now. Groups the user emptied are left out. The full read
- * asks for no geometry, which Drawdy would compute for every element; only
- * the group frames are measured.
+ * How many items the board has, the text of its notes, and its groups: the
+ * frames Sensemaker made, in reading order (top to bottom, then left to
+ * right), each with how many items it holds now. Groups the user emptied are
+ * left out. The full read asks for no geometry, which Drawdy would compute
+ * for every element; only the group frames are measured.
  */
-export const readBoardSummary = async (ddp: Ddp): Promise<{ items: number; groups: ClusterSummary[] }> => {
+export const readBoardSummary = async (
+    ddp: Ddp
+): Promise<{ items: number; groups: ClusterSummary[]; texts: string[] }> => {
     const { drawdyElements } = await ddp.call("command:scene:get-drawdy-elements", {
         properties: ["type", "componentType", "text", "meta", "frameId"],
     });
     const items = drawdyElements.map(toBoardItem).filter(isDefined);
+    const texts = items.filter((i) => i.kind !== "image").map((i) => i.text);
     const perFrame = items.reduce(
         (counts, i) => (i.frameId ? counts.set(i.frameId, (counts.get(i.frameId) ?? 0) + 1) : counts),
         new Map<string, number>()
@@ -173,14 +176,14 @@ export const readBoardSummary = async (ddp: Ddp): Promise<{ items: number; group
     const frames = drawdyElements.filter(
         (e) => e.type === "frame" && e.meta?.[MARK] === "frame" && (perFrame.get(e.id) ?? 0) > 0
     );
-    if (frames.length === 0) return { items: items.length, groups: [] };
+    if (frames.length === 0) return { items: items.length, groups: [], texts };
     const { rects } = await ddp.call("command:scene:element-rects", { drawdyElementIds: frames.map((f) => f.id) });
     const at = new Map(rects.map((r) => [r.drawdyElementId, r.rect]));
     const groups = frames
         .filter((f) => at.has(f.id))
         .toSorted((a, b) => at.get(a.id)!.y - at.get(b.id)!.y || at.get(a.id)!.x - at.get(b.id)!.x)
         .map((f) => ({ frameId: f.id, label: String(f.meta?.label ?? "Group"), count: perFrame.get(f.id)! }));
-    return { items: items.length, groups };
+    return { items: items.length, groups, texts };
 };
 
 /**

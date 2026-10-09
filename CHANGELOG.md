@@ -14,7 +14,8 @@ First release.
 - **One-time setup**: the panel asks before downloading (about 235 MB),
   shows the download's progress, then opens; later sessions start at once.
 - **Search by meaning**: find notes by what they mean, in any language, and
-  jump to them on the board. Copies of a note share one result.
+  jump to them on the board. Copies of a note share one result. Suggested
+  searches come from the topics your notes mention most.
 - **Find similar**: select every note that says the same thing as the
   selected ones.
 - **Try with sample notes**: 84 notes from a messy sprint retrospective to

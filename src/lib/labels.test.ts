@@ -6,6 +6,7 @@ import {
     phrasesOf,
     pickLabels,
     scriptOf,
+    suggestionsFor,
     writtenAs,
 } from "./labels.ts";
 import { normalize } from "./vectors.ts";
@@ -117,6 +118,40 @@ describe("writtenAs", () => {
         expect(writtenAs("deploys", ["Deploys need approval"])).toBe("deploys");
         expect(writtenAs("ci", ["CI is slow"])).toBe("CI");
         expect(writtenAs("missing", ["nothing here"])).toBe("missing");
+    });
+});
+
+describe("suggestionsFor", () => {
+    const notes = [
+        "CI takes 40 minutes to go green",
+        "Cache npm dependencies in CI",
+        "Run CI jobs in parallel",
+        "Too many meetings on Tuesdays",
+        "Cancel the weekly status meeting",
+        "Half the meetings could have been an email",
+        "Flaky tests blocked merges",
+        "Nobody owns the flaky tests",
+        "Kudos to Mai for the demo",
+    ];
+
+    it("suggests what several notes talk about, as the notes write it", () => {
+        const suggestions = suggestionsFor(notes);
+        expect(suggestions).toEqual(expect.arrayContaining(["CI", "meetings", "flaky tests"]));
+        expect(suggestions).not.toContain("Kudos");
+    });
+
+    it("suggests each topic once, and no more than asked", () => {
+        const suggestions = suggestionsFor(notes, 2);
+        expect(suggestions).toHaveLength(2);
+        expect(suggestionsFor(notes).filter((s) => /tests/i.test(s))).toHaveLength(1);
+        const meetings = ["Too many meetings", "Meetings run long", "Cancel the status meeting", "The meeting ran over"];
+        expect(suggestionsFor(meetings)).toHaveLength(1);
+    });
+
+    it("counts copies of a note once, and suggests nothing without a shared topic", () => {
+        expect(suggestionsFor(["Slow builds", "slow builds", "Slow  builds"])).toEqual([]);
+        expect(suggestionsFor(["Fees are high", "Cats are cute", "Rain again"])).toEqual([]);
+        expect(suggestionsFor([])).toEqual([]);
     });
 });
 

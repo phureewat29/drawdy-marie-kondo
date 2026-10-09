@@ -90,6 +90,8 @@ export type DriverToWebview =
     /** Counts, and the one selected element's id when exactly one is selected. */
     | { type: "board"; items: number; selected: number; single?: string }
     | { type: "clusters"; clusters: ClusterSummary[] }
+    /** Searches to suggest, taken from the board's own notes. */
+    | { type: "suggestions"; queries: string[] }
     | { type: "notice"; text: string; tone: Tone }
     /** Whether the one-time download still has to happen (asked for in the panel). */
     | { type: "setup"; needed: boolean }

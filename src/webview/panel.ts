@@ -11,7 +11,10 @@ import type { ICONS } from "../shared/icons.ts";
 /** The icons the panel draws at runtime (static ones are in the markup). */
 export type PanelIcons = Pick<typeof ICONS, "note" | "text" | "shape" | "image">;
 
-type PanelMessage = Extract<DriverToWebview, { type: "results" | "board" | "clusters" | "notice" | "busy" | "setup" }>;
+type PanelMessage = Extract<
+    DriverToWebview,
+    { type: "results" | "board" | "clusters" | "suggestions" | "notice" | "busy" | "setup" }
+>;
 
 export type PanelEvent =
     | { type: "engine"; state: EngineState }
@@ -38,6 +41,8 @@ export type PanelState = {
     board: { items: number; selected: number; single?: string; counted: boolean };
     /** The board's groups, in reading order. */
     clusters: ClusterSummary[];
+    /** Searches to suggest, from the board's own notes. */
+    suggestions: string[];
     /** Whether the group list is open; the bar alone shows otherwise. */
     groupsOpen: boolean;
     /** The group the user went to last, while it exists. */
@@ -88,6 +93,7 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         results: null,
         board: { items: 0, selected: 0, counted: false },
         clusters: [],
+        suggestions: [],
         groupsOpen: false,
         currentGroup: null,
         notice: null,
@@ -145,6 +151,8 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
                                   ? s.currentGroup
                                   : null,
                         };
+                    case "suggestions":
+                        return { ...s, suggestions: m.queries };
                     case "notice":
                         return { ...s, notice: nextNotice(s, m.text, m.tone) };
                     case "busy":
@@ -266,21 +274,25 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         } else el.progress.removeAttribute("aria-valuenow");
     };
 
-    const EXAMPLES = ["slow builds", "who deserves thanks", "unreliable tests", "the team is exhausted"];
-    const hintView = () =>
+    /** How search works, with searches suggested by what the board's notes talk about. */
+    const hintView = (suggestions: readonly string[]) =>
         h(
             "div",
             { className: "hint muted" },
             doc.createTextNode("Search the board by "),
             h("b", { text: "meaning" }),
             doc.createTextNode(", not keywords. Ask in any language."),
-            h(
-                "div",
-                { className: "examples" },
-                ...EXAMPLES.map((example) =>
-                    h("button", { className: "chip", text: example, on: { click: () => setQuery(example) } })
-                )
-            )
+            ...(suggestions.length > 0
+                ? [
+                      h(
+                          "div",
+                          { className: "examples", title: "Topics your notes mention most" },
+                          ...suggestions.map((query) =>
+                              h("button", { className: "chip", text: query, on: { click: () => setQuery(query) } })
+                          )
+                      ),
+                  ]
+                : [])
         );
 
     const hitView = (hit: SearchHit, best: number) =>
@@ -310,7 +322,7 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
     const renderResults = (s: PanelState) => {
         // Earlier results stay, dimmed, until this query's arrive.
         el.results.classList.toggle("stale", s.query !== "" && s.results !== null && s.results.query !== s.query);
-        if (!s.query) return el.results.replaceChildren(hintView());
+        if (!s.query) return el.results.replaceChildren(hintView(s.suggestions));
         if (!s.results) {
             const waiting = s.engine.phase === "ready" ? "Searching…" : "Searching as soon as Sensemaker is ready…";
             return el.results.replaceChildren(h("div", { className: "hint muted", text: waiting }));
@@ -442,7 +454,10 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         if (changed("setup", "engine", "starting")) renderSetup(next);
         if (changed("engine", "busy")) renderStatus(next);
         const phaseChanged = prev === null || prev.engine.phase !== next.engine.phase;
-        if (changed("query", "results") || (phaseChanged && next.query && !next.results)) renderResults(next);
+        const hintChanged = changed("suggestions") && !next.query;
+        if (changed("query", "results") || hintChanged || (phaseChanged && next.query && !next.results)) {
+            renderResults(next);
+        }
         if (changed("clusters", "query", "groupsOpen", "currentGroup")) renderClusters(next);
         if (changed("notice")) renderNotice(next);
         if (changed("board", "busy")) renderBoard(next);
