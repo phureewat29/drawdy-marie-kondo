@@ -2,7 +2,7 @@
     "driverId": "a.janitor",
     "driverName": "Janitor",
     "driverVersion": "0.2.0",
-    "description": "Sort, search and connect your board by meaning. Cluster sticky notes into labelled groups, search in any language, and find duplicate ideas. On-device AI runs on your GPU in the browser: your notes never leave your device.",
+    "description": "Sort, search and connect your board by meaning. Cluster sticky notes into labelled groups, search in any language, and find duplicate ideas.",
     "icon": "assets/icon.png",
     "main": "main.js",
     "permissions": ["dom", "scene", "storage"]
