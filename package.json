@@ -1,6 +1,6 @@
 {
     "name": "drawdy-janitor",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Drawdy extension: sort, search and connect elements on board with Google's EmbeddingGemma 2",
     "author": "Phureewat A <a.phureewat@gmail.com>",
     "license": "MIT",

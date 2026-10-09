@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+- Marie Kondo is now **Janitor**: same icon, same features.
+- The sample board is bigger: a 108-note retro across nine themes, including
+  security and performance.
+- The group count picker matches the buttons beside it.
+
 ## 0.1.2
 
 - The sidebar button and the panel's title bar show the extension's icon,
