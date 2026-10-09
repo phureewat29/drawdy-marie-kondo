@@ -1,6 +1,6 @@
 /**
  * A sample board for trying Marie Kondo: an engineering team's sprint
- * retrospective, as it looks before anyone sorts it. Seven themes; a few
+ * retrospective, as it looks before anyone sorts it. Nine themes; a few
  * notes say what another says in other words (for Find similar), and one
  * was written word for word by two people.
  */
@@ -96,4 +96,30 @@ export const DEMO_NOTES: string[] = [
     "We're burning out, the next sprint should be lighter",
     "Interrupted by support questions all day",
     "Nobody knows which project comes first",
+    // security
+    "Passwords leaked in a public commit",
+    "Someone pushed secret keys to a public repo",
+    "Nobody reads the security warnings on our dependencies",
+    "Old libraries with known vulnerabilities",
+    "Turn on two-factor login for every account",
+    "The security audit found two critical holes",
+    "Attackers could reach the admin panel",
+    "Everyone has admin rights, which is risky",
+    "Phishing emails fooled half the team",
+    "Encrypt customer data at rest",
+    "Who patches security issues?",
+    "Rotate passwords and keys every quarter",
+    // performance
+    "The dashboard takes 8 seconds to load",
+    "Users say the dashboard feels slow",
+    "Search gets slow under heavy traffic",
+    "A memory leak slows the worker service",
+    "The app is slow to start on phones",
+    "Slow database queries with no indexes",
+    "Our pages got twice as heavy and twice as slow",
+    "Cache the product catalog to speed it up",
+    "Make sure checkout survives peak season traffic",
+    "Response times creep up every month",
+    "Home page images aren't compressed",
+    "Set a speed budget for the web app",
 ];

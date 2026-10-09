@@ -120,10 +120,10 @@ O(n³) eigendecomposition: grouping 1,000 notes takes about 0.6 seconds of CPU
 on an Apple M3.
 
 Clustering was tuned offline on hand-labelled note sets with the same model:
-app feedback, a city-ideas board, and the 84-note sample retro, where the
-groups match the intended themes about as well as on the others (adjusted
-Rand index 0.44 against 0.41). The "Find similar" threshold was calibrated
-the same way.
+app feedback, a city-ideas board, and the sample retro. On the sample retro
+(108 notes, nine themes) the groups match the intended themes with an
+adjusted Rand index of 0.54, against 0.41 on the others. The "Find similar"
+threshold was calibrated the same way.
 
 ## Development
 
