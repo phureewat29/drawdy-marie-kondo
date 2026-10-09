@@ -9,6 +9,7 @@ import { createSearch } from "./actions/search.ts";
 import type { Context } from "./context.ts";
 import { createEmbeddings } from "./embeddings.ts";
 import { createEngineClient, type EngineClient } from "./engine-client.ts";
+import { groupFrame } from "./frame.ts";
 import { kvSetupFlag } from "./model-store.ts";
 import { glide } from "./motion.ts";
 import { MODEL } from "../shared/protocol.ts";
@@ -428,5 +429,21 @@ describe("board", () => {
         expect(await framesLeftEmpty(ddp, moving)).toEqual([
             { id: "f1", rect: { x: 0, y: 0, width: 500, height: 400 }, label: "Group f1" },
         ]);
+    });
+});
+
+describe("group frame", () => {
+    it("names the frame after its group, so the name shows on the board", () => {
+        const rect = { x: 10, y: 20, width: 300, height: 200 };
+        expect(groupFrame({ id: "f1", rect, label: "CI" })).toEqual({
+            type: "frame",
+            drawdyElementId: "f1",
+            name: "CI",
+            position: [10, 20],
+            width: 300,
+            height: 200,
+            rotation: 0,
+            meta: { [MARK]: "frame", label: "CI" },
+        });
     });
 });

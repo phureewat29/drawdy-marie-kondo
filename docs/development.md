@@ -171,10 +171,10 @@ Node 24 without a build step.
 
 ## Limitations
 
-- **Frame names.** Drawdy's extension API does not pass a name to new frames
-  yet, so group frames show Drawdy's default "Frame 1…" names; the group names
-  are in the panel. Sensemaker already sends each frame's name, so they appear
-  once Drawdy forwards it ([details](drawdy-host-notes.md)).
+- **Frame names.** Group frames are named on creation (protocol 1.3), which
+  drawdy.io shows once it runs host commit `f37dafcb`; until then they read
+  "Frame 1…" and the group names are in the panel
+  ([details](drawdy-host-notes.md)).
 - Fastest with WebGPU (Chrome or Edge 113+, Safari 26+, Firefox 141+ on
   Windows); other browsers use a slower fallback.
 - The first run downloads about 235 MB, plus 109 MB the first time images are

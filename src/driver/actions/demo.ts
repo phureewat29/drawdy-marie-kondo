@@ -1,10 +1,10 @@
+import type { DrawdyElementSchema } from "@drawdy/driver-protocol";
 import { DEMO_NOTES } from "../../lib/demo-notes.ts";
 import { rng, shuffle } from "../../lib/random.ts";
 import { focus, STYLE_PANEL_WIDTH } from "../camera.ts";
 import type { Context } from "../context.ts";
 import { PAPERS } from "../palette.ts";
 import { findFreeSpot } from "../space.ts";
-import { stickyNote } from "../sticky-note.ts";
 
 const CELL = { width: 250, height: 240 };
 const JITTER = 36;
@@ -27,8 +27,10 @@ export const addDemo = async (ctx: Context): Promise<void> => {
     };
     const area = { ...size, ...(await findFreeSpot(ctx.ddp, centered)) };
     const jitter = () => (random() - 0.5) * 2 * JITTER;
-    const notes = shuffle(DEMO_NOTES, random).map((text, i) =>
-        stickyNote({
+    const notes = shuffle(DEMO_NOTES, random).map(
+        (text, i): DrawdyElementSchema => ({
+            type: "shape",
+            componentType: "sticky-note",
             drawdyElementId: ctx.generateId(),
             x: area.x + (i % COLUMNS) * CELL.width + jitter(),
             y: area.y + Math.floor(i / COLUMNS) * CELL.height + jitter(),

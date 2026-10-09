@@ -36,8 +36,7 @@ const kindOf = (element: SubscribedDrawdyElement, text: string): ItemKind | null
     if (element.type === "image") return "image";
     if (!text) return null;
     if (element.type === "text") return "text";
-    // The protocol's types predate sticky notes in `componentType`.
-    if (element.type === "path") return String(element.componentType) === "sticky-note" ? "note" : "shape";
+    if (element.type === "path") return element.componentType === "sticky-note" ? "note" : "shape";
     return null;
 };
 

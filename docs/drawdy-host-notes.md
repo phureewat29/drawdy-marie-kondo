@@ -1,41 +1,23 @@
 # Notes for the Drawdy team
 
 Things we ran into while building Sensemaker against the Driver Protocol
-(`@drawdy/driver-protocol` 1.1, repo at 1.2) and drawdy.io in October 2026,
+(`@drawdy/driver-protocol` 1.1 to 1.3) and drawdy.io in October 2026,
 each with the smallest change that would fix it.
 
-## 1. Let extensions name frames
+## 1. Let extensions name frames (done in 1.3)
 
-Sensemaker names each group's frame after the group ("CI", "Meetings"),
-but every frame an extension creates is called "Frame N":
+Sensemaker names each group's frame after the group ("CI", "Meetings"), but
+until 1.3 every frame an extension created was called "Frame N". Protocol
+1.3 and host commit `f37dafcb` fixed it: `name` on a new frame reaches
+`createFrame`, and `frameName` reads and renames a frame. Sensemaker sends
+`name` on every frame it creates (`src/driver/frame.ts`), so group names
+show on the board once drawdy.io runs that commit.
 
-- `command:scene:add-drawdy-elements` creates frames with
-  `frame.createFrame({ id, meta, groupId, rect })`, so no name reaches the host.
-- `command:scene:update-drawdy-elements` cannot rename one either: it copies
-  `meta`, `transform`, `locked`, `frameId`, `groupId`, `localAnimation` and
-  style keys only.
-
-The host already supports names: "Wrap in frame" and Slides call
-`createFrame({ name })`, and renaming a frame sets `componentProps.name`.
-
-**Change:** in the add handler's `case "frame"`, pass the name through:
-
-```js
-e.frame.createFrame({
-    id: n.drawdyElementId,
-    meta: n.meta,
-    groupId: n.groupId,
-    name: n.name, // new
-    rect: { x: n.position[0], y: n.position[1], width: n.width, height: n.height },
-});
-```
-
-and add `name?: string` to the `frame` variant of `DrawdyElementSchema`.
-Optionally, accept `name` in `UpdateableProperties` for frames and expose it
-as a readable key.
-
-Sensemaker already sends `name` on every frame it creates
-(`src/driver/frame.ts`), so group names appear as soon as the host forwards it.
+One follow-up: a host from before 1.3 throws `Not exhaustive` when a driver
+asks `get-drawdy-elements` for a key it does not know, such as `frameName`.
+Skipping unknown keys instead would let drivers adopt new readable keys
+without breaking on hosts that have not deployed them yet. Until then,
+Sensemaker reads group names from its own frame `meta`, not `frameName`.
 
 ## 2. One undo step per command
 
