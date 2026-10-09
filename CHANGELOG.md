@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- New icon: a tidy box of sticky notes.
+- Each group's name now shows on its frame on the board, not only in the
+  panel.
+
 ## 0.1.0
 
 First release.
