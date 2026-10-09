@@ -1,5 +1,5 @@
 /**
- * The slice of the transformers.js 4 API Marie Kondo uses. The library itself
+ * The slice of the transformers.js 4 API Janitor uses. The library itself
  * is loaded at runtime (see engine.ts), so only these types are compiled in.
  */
 

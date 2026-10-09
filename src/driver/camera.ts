@@ -2,7 +2,7 @@ import type { Rect } from "../lib/layout.ts";
 import type { Ddp } from "./ddp.ts";
 
 /**
- * Screen space Drawdy's own UI covers: the Marie Kondo panel on the right, the
+ * Screen space Drawdy's own UI covers: the Janitor panel on the right, the
  * toolbar on top, and (while something is selected) the style panel on the
  * left.
  */
@@ -15,7 +15,7 @@ const MIN_FREE = 200;
 
 /**
  * Flies the camera so `rect` fills the screen space left free by Drawdy's
- * toolbar and the Marie Kondo panel, instead of hiding under them. On small
+ * toolbar and the Janitor panel, instead of hiding under them. On small
  * windows, where avoiding them would leave no room, `rect` goes under them.
  */
 export const focus = async (

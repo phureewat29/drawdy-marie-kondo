@@ -33,7 +33,7 @@ export const findSimilar = async (ctx: Context): Promise<void> => {
     try {
         ctx.busy("Finding similar notes…");
         const seedVectors = readable(seeds, await ctx.embeddings.items("similarity", seeds)).vectors;
-        if (seedVectors.length === 0) return ctx.notify("Marie Kondo couldn't read the selected image.", "error");
+        if (seedVectors.length === 0) return ctx.notify("Janitor couldn't read the selected image.", "error");
         const query = normalize(mean(seedVectors));
         // Items that cannot be read (a broken image) are left out.
         const { items: candidates, vectors } = readable(

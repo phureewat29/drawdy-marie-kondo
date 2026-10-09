@@ -66,7 +66,7 @@ export const createEngineClient = (deps: { channel: Channel; store: ModelFileSto
         heardAt = Date.now();
         watchdog = setInterval(() => {
             if (Date.now() - heardAt <= SILENCE_LIMIT_MS) return;
-            const err = new Error("Marie Kondo stopped responding. Reload the page, then try again.");
+            const err = new Error("Janitor stopped responding. Reload the page, then try again.");
             [...pending.keys()].forEach((requestId) => settle(requestId)?.reject(err));
         }, 5_000);
     };
@@ -116,7 +116,7 @@ export const createEngineClient = (deps: { channel: Channel; store: ModelFileSto
                 await store.put(message.key, message.blob).catch(() => undefined);
                 return channel.post({ type: "cache-put-done", requestId: message.requestId });
             case "log":
-                return console[message.level](`[marie-kondo] ${message.message}`);
+                return console[message.level](`[janitor] ${message.message}`);
             default:
                 return;
         }

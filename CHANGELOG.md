@@ -19,7 +19,7 @@ First release.
   photos into named frames, in any language. Grouping only moves things:
   every note keeps its own colour and content. Photos are grouped by what
   they show and named after it; a photo group clearly about some notes joins
-  them. Choose the number of groups or let Marie Kondo decide; select earlier
+  them. Choose the number of groups or let Janitor decide; select earlier
   groups to regroup them in place. Groups up to 1,000 items, with progress
   shown as it reads them.
 - **One-time setup**: the panel asks before downloading (about 235 MB),

@@ -1,15 +1,15 @@
 # Notes for the Drawdy team
 
-Things we ran into while building Marie Kondo against the Driver Protocol
+Things we ran into while building Janitor against the Driver Protocol
 (`@drawdy/driver-protocol` 1.1 to 1.3) and drawdy.io in October 2026,
 each with the smallest change that would fix it.
 
 ## 1. Let extensions name frames (done in 1.3)
 
-Marie Kondo names each group's frame after the group ("CI", "Meetings"), but
+Janitor names each group's frame after the group ("CI", "Meetings"), but
 until 1.3 every frame an extension created was called "Frame N". Protocol
 1.3 and host commit `f37dafcb` fixed it: `name` on a new frame reaches
-`createFrame`, and `frameName` reads and renames a frame. Marie Kondo sends
+`createFrame`, and `frameName` reads and renames a frame. Janitor sends
 `name` on every frame it creates (`src/driver/frame.ts`), so group names
 show on the board; drawdy.io has run that commit since 2026-10-09.
 
@@ -17,11 +17,11 @@ One follow-up: a host from before 1.3 throws `Not exhaustive` when a driver
 asks `get-drawdy-elements` for a key it does not know, such as `frameName`.
 Skipping unknown keys instead would let drivers adopt new readable keys
 without breaking on hosts that have not deployed them yet. Until then,
-Marie Kondo reads group names from its own frame `meta`, not `frameName`.
+Janitor reads group names from its own frame `meta`, not `frameName`.
 
 ## 2. One undo step per command
 
-Marie Kondo leaves undo to Drawdy, but a grouping takes several presses of
+Janitor leaves undo to Drawdy, but a grouping takes several presses of
 Undo to take back:
 
 - `createFrame` pushes a history entry before every frame it adds, so one
@@ -30,7 +30,7 @@ Undo to take back:
   `remove-drawdy-elements`) seals the changes before it as a step of its own,
   so a driver cannot group several commands into one step.
 
-Marie Kondo keeps it as short as it can: the notes' moves and frames
+Janitor keeps it as short as it can: the notes' moves and frames
 land in one `update-drawdy-elements`, so the first Undo puts the notes back
 (after a regroup, the frames it replaced come back first), and each further
 one removes a frame.
@@ -44,7 +44,7 @@ sequence of commands a single undo step.
 ## 3. Frames an extension creates get selected
 
 `createFrame` selects the new frame, so `add-drawdy-elements` with frames
-changes the user's selection (and opens the style panel). Marie Kondo clears
+changes the user's selection (and opens the style panel). Janitor clears
 the selection afterwards. **Change:** skip `selection.select` when the frame
 comes from a driver, as for every other element type.
 
@@ -52,7 +52,7 @@ comes from a driver, as for every other element type.
 
 Uninstalling a driver clears its permission answers
 (`permissionStore.clearDriver`), but nothing deletes its records in
-`drawdy-driver-kv`. For Marie Kondo that is 235 to 344 MB of model files that
+`drawdy-driver-kv`. For Janitor that is 235 to 344 MB of model files that
 stay in the user's browser after they remove it, with no way to see or free
 them short of clearing all of drawdy.io's site data (which also deletes local
 boards).
@@ -68,7 +68,7 @@ A driver runs in a worker created from a `blob:` URL inside a
 `sandbox="allow-scripts"` iframe. Its origin is `blob:null`, which browsers do
 not treat as a secure context, so drivers get no `navigator.gpu`, no Cache API
 and no IndexedDB. Webviews (`srcdoc`, same sandbox) are secure contexts and do
-get WebGPU, which is why Marie Kondo runs its model in its webview.
+get WebGPU, which is why Janitor runs its model in its webview.
 
 **Option:** start the host worker from a URL on a dedicated extensions origin
 (for example `https://ext.drawdy.io/host-worker.js`) instead of an opaque

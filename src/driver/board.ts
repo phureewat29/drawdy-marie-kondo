@@ -4,10 +4,10 @@ import type { Rect } from "../lib/layout.ts";
 import type { ClusterSummary, ItemKind } from "../shared/protocol.ts";
 import type { Ddp } from "./ddp.ts";
 
-/** Meta key on the frames Marie Kondo creates. */
-export const MARK = "marie-kondo";
+/** Meta key on the frames Janitor creates. */
+export const MARK = "janitor";
 
-/** Anything on the board Marie Kondo can read: notes, text, labelled shapes, images. */
+/** Anything on the board Janitor can read: notes, text, labelled shapes, images. */
 export type BoardItem = {
     id: string;
     kind: ItemKind;
@@ -155,7 +155,7 @@ export const framesLeftEmpty = async (ddp: Ddp, items: readonly BoardItem[]): Pr
 
 /**
  * How many items the board has, the text of its notes, and its groups: the
- * frames Marie Kondo made, in reading order (top to bottom, then left to
+ * frames Janitor made, in reading order (top to bottom, then left to
  * right), each with how many items it holds now. Groups the user emptied are
  * left out. The full read asks for no geometry, which Drawdy would compute
  * for every element; only the group frames are measured.

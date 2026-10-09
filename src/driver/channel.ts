@@ -12,7 +12,7 @@ import { ICONS } from "../shared/icons.ts";
 import type { Ddp } from "./ddp.ts";
 import { webviewHtml } from "./webview-html.ts";
 
-const WEBVIEW_ID = "marie-kondo:panel";
+const WEBVIEW_ID = "janitor:panel";
 /** How long a new webview gets to start its script. */
 const START_TIMEOUT_MS = 20_000;
 
@@ -51,7 +51,7 @@ export const themeCss = (styling: ModuleStyling): string =>
         .join("");
 
 /**
- * The driver's end of the Marie Kondo webview: creates it, waits for its
+ * The driver's end of the Janitor webview: creates it, waits for its
  * script to announce `ready`, queues messages until then, and checks every
  * message coming back against the protocol.
  */
@@ -85,7 +85,7 @@ export const createChannel = (deps: { ddp: Ddp; styling: () => ModuleStyling }):
     const waitReady = () =>
         new Promise<void>((resolve, reject) => {
             if (ready) return resolve();
-            const timer = setTimeout(() => reject(new Error("The Marie Kondo panel did not start")), START_TIMEOUT_MS);
+            const timer = setTimeout(() => reject(new Error("The Janitor panel did not start")), START_TIMEOUT_MS);
             waiters = [
                 ...waiters,
                 () => {
@@ -117,7 +117,7 @@ export const createChannel = (deps: { ddp: Ddp; styling: () => ModuleStyling }):
     const receive = (raw: unknown) => {
         const message = parse(webviewToDriver, raw);
         if (!message) {
-            console.warn(`[marie-kondo] ignored a malformed webview message: ${JSON.stringify(raw)?.slice(0, 300)}`);
+            console.warn(`[janitor] ignored a malformed webview message: ${JSON.stringify(raw)?.slice(0, 300)}`);
             return;
         }
         if (message.type === "ready") markReady();

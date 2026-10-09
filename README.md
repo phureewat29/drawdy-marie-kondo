@@ -1,16 +1,16 @@
-# Marie Kondo
+# Janitor
 
 **Turn a wall of sticky notes into clear themes, in one click.**
 
-Marie Kondo groups your notes by what they mean, finds notes by meaning, and
+Janitor groups your notes by what they mean, finds notes by meaning, and
 spots the ones that say the same thing. It runs privately on your device, so
 your notes never leave your browser.
 
-![84 notes from a sprint retro slide into named groups, then a search for "who deserves thanks" finds the kudos notes](https://raw.githubusercontent.com/phureewat29/drawdy-marie-kondo/main/.github/assets/demo.gif)
+![84 notes from a sprint retro slide into named groups, then a search for "who deserves thanks" finds the kudos notes](https://raw.githubusercontent.com/phureewat29/drawdy-janitor/main/.github/assets/demo.gif)
 
 ## How it works
 
-![1. Select your notes. 2. Press Group: the AI reads what each note means, privately in your browser. 3. Get named groups: notes slide into frames named CI, Meetings and Kudos, keeping their colours and text.](https://raw.githubusercontent.com/phureewat29/drawdy-marie-kondo/main/.github/assets/how-it-works.png)
+![1. Select your notes. 2. Press Group: the AI reads what each note means, privately in your browser. 3. Get named groups: notes slide into frames named CI, Meetings and Kudos, keeping their colours and text.](https://raw.githubusercontent.com/phureewat29/drawdy-janitor/main/.github/assets/how-it-works.png)
 
 ## Made for
 
@@ -47,20 +47,20 @@ same thing. Handy for cleaning up duplicates after a brainstorm.
 
 ## Getting started
 
-1. Click the **sparkles** button on the right edge of the board.
-2. The first time, Marie Kondo asks to download its AI model (about 235 MB).
+1. Click the **Janitor** button, the tidy box on the right edge of the board.
+2. The first time, Janitor asks to download its AI model (about 235 MB).
    This happens once; after that it opens right away.
 3. On an empty board, press **Try with sample notes**, then **Group**.
 
-You can also right-click a selection and choose **Extension → Marie Kondo**.
+You can also right-click a selection and choose **Extension → Janitor**.
 
 ## Good to know
 
 - Fastest in an up-to-date Chrome, Edge or Safari. Other browsers work, but
   more slowly.
-- Each group's name shows on its frame and in the Marie Kondo panel.
+- Each group's name shows on its frame and in the Janitor panel.
 - Groups up to 1,000 notes at a time.
-- To group photos, Marie Kondo will download about 109 MB more for the engine.
+- To group photos, Janitor will download about 109 MB more for the engine.
 
 ## Permissions
 
@@ -72,6 +72,6 @@ You can also right-click a selection and choose **Extension → Marie Kondo**.
 
 Powered by [EmbeddingGemma 2](https://huggingface.co/google/embeddinggemma-2)
 by Google DeepMind. Building or curious how it works? See the
-[developer guide](https://github.com/phureewat29/drawdy-marie-kondo/blob/main/docs/development.md).
+[developer guide](https://github.com/phureewat29/drawdy-janitor/blob/main/docs/development.md).
 
-MIT licensed. Not affiliated with or endorsed by Marie Kondo or KonMari.
+MIT licensed.

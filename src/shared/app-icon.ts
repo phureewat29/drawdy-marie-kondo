@@ -1,5 +1,5 @@
 /**
- * Marie Kondo's icon: a tidy box of sticky notes and a sparkle, the same
+ * Janitor's icon: a tidy box of sticky notes and a sparkle, the same
  * artwork as assets/icon.png. Drawdy shows it on the sidebar button and in the
  * panel's title bar; the setup card shows it too.
  */

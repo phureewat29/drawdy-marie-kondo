@@ -33,7 +33,7 @@ export type PanelState = {
     /** Download pressed, until the engine answers. */
     starting: boolean;
     engine: EngineState;
-    /** What Marie Kondo is doing, and how far along (0..1) when it knows. */
+    /** What Janitor is doing, and how far along (0..1) when it knows. */
     busy: { text: string; progress?: number } | null;
     query: string;
     results: { query: string; hits: SearchHit[]; ms: number; error?: string } | null;
@@ -112,9 +112,9 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
                 if (e.state.phase === "error" && s.engine.phase !== "error" && s.setup === "done") {
                     return { ...next, notice: nextNotice(s, `Couldn't start: ${e.state.message}`, "error") };
                 }
-                // Said once, as Marie Kondo gets ready: why it may feel slow.
+                // Said once, as Janitor gets ready: why it may feel slow.
                 if (e.state.phase === "ready" && e.state.device === "wasm" && s.engine.phase !== "ready") {
-                    return { ...next, notice: nextNotice(s, "This browser can't use the GPU, so Marie Kondo is slower here.", "info") };
+                    return { ...next, notice: nextNotice(s, "This browser can't use the GPU, so Janitor is slower here.", "info") };
                 }
                 return next;
             }
@@ -324,7 +324,7 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         el.results.classList.toggle("stale", s.query !== "" && s.results !== null && s.results.query !== s.query);
         if (!s.query) return el.results.replaceChildren(hintView(s.suggestions));
         if (!s.results) {
-            const waiting = s.engine.phase === "ready" ? "Searching…" : "Searching as soon as Marie Kondo is ready…";
+            const waiting = s.engine.phase === "ready" ? "Searching…" : "Searching as soon as Janitor is ready…";
             return el.results.replaceChildren(h("div", { className: "hint muted", text: waiting }));
         }
         const { hits, ms, error } = s.results;
@@ -390,13 +390,13 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         el.setupTitle.textContent = failed
             ? "Couldn't finish the download"
             : loading
-              ? "Setting up Marie Kondo…"
-              : "Set up Marie Kondo";
+              ? "Setting up Janitor…"
+              : "Set up Janitor";
         el.setupText.textContent = failed
             ? `${engine.message}. Check your connection, then try again.`
             : loading
-              ? "Downloading the model Marie Kondo runs on your device. This happens once:"
-              : `Marie Kondo works on your device, so your notes never leave this browser. It needs a one-time download of this model, about ${DOWNLOAD_MB} MB:`;
+              ? "Downloading the model Janitor runs on your device. This happens once:"
+              : `Janitor works on your device, so your notes never leave this browser. It needs a one-time download of this model, about ${DOWNLOAD_MB} MB:`;
         el.setupModel.textContent = model;
         // The file being read right now, so a long download is visibly moving.
         const file = engine.phase === "loading" ? engine.file : undefined;
@@ -420,7 +420,7 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
             : `Grouping photos adds ${IMAGES_MB} MB the first time.`;
     };
 
-    /** Action buttons follow the selection, and wait while Marie Kondo works. */
+    /** Action buttons follow the selection, and wait while Janitor works. */
     const renderBoard = (s: PanelState) => {
         const { items, selected, counted } = s.board;
         const busy = s.busy !== null;

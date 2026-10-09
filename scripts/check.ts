@@ -107,7 +107,7 @@ const bootAndOpenPanel = async (): Promise<string> => {
     await onEvent({
         type: "subscription:dom:element-clicked",
         subscriptionId: "check",
-        body: { domElementId: "marie-kondo:open", clientX: 0, clientY: 0 },
+        body: { domElementId: "janitor:open", clientX: 0, clientY: 0 },
     });
     if (!webview) throw new Error("opening the panel did not create a webview");
     return (webview as { html: string }).html;
