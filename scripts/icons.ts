@@ -22,7 +22,6 @@ const ICONS = {
     text: "type",
     shape: "square",
     image: "image",
-    sparkles: "sparkles",
     download: "download",
     chevronLeft: "chevron-left",
     chevronRight: "chevron-right",

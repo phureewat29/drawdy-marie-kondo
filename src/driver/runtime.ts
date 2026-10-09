@@ -1,7 +1,7 @@
 import type { DriverModule, DriverSubscriptionEvent } from "@drawdy/driver-protocol";
 import { debounce, serial } from "../lib/fp.ts";
 import { suggestionsFor } from "../lib/labels.ts";
-import { ICONS } from "../shared/icons.ts";
+import { appIcon } from "../shared/app-icon.ts";
 import type { ClusterSummary } from "../shared/protocol.ts";
 import { clusterSelection } from "./actions/cluster.ts";
 import { addDemo } from "./actions/demo.ts";
@@ -19,10 +19,8 @@ import { MENU, actionForMenu, leafIds } from "./menu.ts";
 import { kvModelStore, kvSetupFlag } from "./model-store.ts";
 
 const ACTION_BUTTON_ID = "marie-kondo:open";
-/** Lucide "sparkles", tinted to stand out among Drawdy's monochrome buttons. */
-const ACTION_BUTTON_SVG = ICONS.sparkles
-    .replace('stroke="currentColor"', 'stroke="#b69cff"')
-    .replace('class="icon"', 'width="18" height="18"');
+/** The extension's own icon, so the sidebar button matches the extensions list. */
+const ACTION_BUTTON_SVG = appIcon(20);
 
 export type Runtime = {
     /** Registers Marie Kondo's button, menu and subscriptions. */

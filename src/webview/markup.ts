@@ -1,5 +1,6 @@
 /** The panel's static markup and styles. Colours come from Drawdy's theme vars. */
 
+import { appIcon } from "../shared/app-icon.ts";
 import { ICONS } from "../shared/icons.ts";
 
 export const PANEL_CSS = `
@@ -31,8 +32,8 @@ button { font: inherit; color: inherit; }
 #boot { padding: 16px 14px; }
 #work { display: flex; flex-direction: column; flex: 1; min-height: 0; }
 #setup { padding: 22px 18px; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
-#setup .mark { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--drawdy-surface2, rgba(0,0,0,.05)); color: #b69cff; }
-#setup .mark .icon { width: 20px; height: 20px; }
+#setup .mark { width: 36px; height: 36px; }
+#setup .mark svg { display: block; }
 #setup h2 { margin: 4px 0 0; font-size: 15px; font-weight: 600; }
 #setup p { margin: 0; }
 #setup-progress { height: 6px; border-radius: 3px; background: var(--drawdy-border, #e5e5e5); overflow: hidden; }
@@ -133,7 +134,7 @@ footer .wide { grid-column: 1 / -1; }
 export const PANEL_BODY = `
 <div id="boot" class="muted small">Starting…</div>
 <section id="setup" hidden>
-    <div class="mark">${ICONS.sparkles}</div>
+    <div class="mark">${appIcon(36)}</div>
     <h2 id="setup-title" aria-live="polite"></h2>
     <p id="setup-text"></p>
     <p class="small"><code id="setup-model"></code></p>

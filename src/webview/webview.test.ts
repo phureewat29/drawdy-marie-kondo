@@ -3,6 +3,7 @@
  */
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { webviewScript } from "../driver/webview-html.ts";
+import { appIcon } from "../shared/app-icon.ts";
 import { ICONS } from "../shared/icons.ts";
 import { MODEL, TRANSFORMERS, type WebviewToDriver } from "../shared/protocol.ts";
 import { createEngine } from "./engine.ts";
@@ -140,6 +141,15 @@ describe("panel", () => {
             state: { phase: "ready", device: "webgpu", vision: false, adapter: "apple metal-3", loadMs: 900 },
         });
         expect(line.hidden).toBe(true);
+    });
+
+    it("shows the extension's icon, the same SVG Drawdy shows on its sidebar button", () => {
+        setup();
+        // Drawdy loads the button's SVG as an image, so it must stand on its own.
+        const parsed = new DOMParser().parseFromString(appIcon(20), "image/svg+xml");
+        expect(parsed.querySelector("parsererror")).toBeNull();
+        expect(parsed.documentElement.getAttribute("width")).toBe("20");
+        expect(document.querySelector("#setup .mark svg")?.getAttribute("width")).toBe("36");
     });
 
     it("names the model only in a dim line at the bottom", () => {
