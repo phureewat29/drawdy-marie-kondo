@@ -7,7 +7,7 @@ import { appIcon } from "../shared/app-icon.ts";
 import { ICONS } from "../shared/icons.ts";
 import { MODEL, TRANSFORMERS, type WebviewToDriver } from "../shared/protocol.ts";
 import { createEngine } from "./engine.ts";
-import { PANEL_BODY } from "./markup.ts";
+import { PANEL_BODY, PANEL_CSS } from "./markup.ts";
 import { createPanel } from "./panel.ts";
 
 /**
@@ -150,6 +150,12 @@ describe("panel", () => {
         expect(parsed.querySelector("parsererror")).toBeNull();
         expect(parsed.documentElement.getAttribute("width")).toBe("20");
         expect(document.querySelector("#setup .mark svg")?.getAttribute("width")).toBe("36");
+    });
+
+    it("draws the group count's chevron itself, not the browser's", () => {
+        setup();
+        expect(document.querySelector(".picker > select#groups + svg.icon")).not.toBeNull();
+        expect(PANEL_CSS).toMatch(/#groups \{[^}]*appearance: none/);
     });
 
     it("names the model only in a dim line at the bottom", () => {

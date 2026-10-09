@@ -123,10 +123,20 @@ footer .wide { grid-column: 1 / -1; }
 .action.quiet:not(:disabled):hover { color: var(--drawdy-foreground, #111); filter: none; }
 .action:disabled { opacity: .45; cursor: default; }
 .action:not(:disabled):hover { filter: brightness(1.06); }
+/* How many groups: a native select drawn like the buttons beside it, with the panel's own chevron. */
+.picker { position: relative; display: inline-flex; min-width: 0; }
+.picker:hover { filter: brightness(1.06); }
+.picker > .icon {
+    position: absolute; right: 9px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+    color: var(--drawdy-muted-foreground, #777); pointer-events: none;
+}
 #groups {
-    height: 34px; border-radius: var(--drawdy-radius-md, 8px); padding: 0 6px; font: inherit;
+    appearance: none; -webkit-appearance: none; margin: 0; min-width: 0;
+    height: 34px; padding: 0 29px 0 11px; border-radius: var(--drawdy-radius-md, 8px);
+    font: inherit; font-weight: 600; cursor: pointer;
     color: var(--drawdy-foreground, #111); background: var(--drawdy-surface, #fff); border: 1px solid var(--drawdy-border, #e5e5e5);
 }
+#groups:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--drawdy-background, #fff), 0 0 0 4px var(--drawdy-ring, #6366f1); }
 #stats { grid-column: 1 / -1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #credit { grid-column: 1 / -1; margin: -4px 0 0; text-align: center; font-size: 10px; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 `;
@@ -167,11 +177,14 @@ export const PANEL_BODY = `
 <div id="notice" role="status" aria-live="polite" hidden></div>
 <footer>
     <button class="action primary" id="cluster" title="Sort the selected notes into groups by meaning">${ICONS.group}<span>Group</span></button>
-    <select id="groups" title="How many groups" aria-label="How many groups">
-        <option value="">Auto</option>
-        <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-        <option value="6">6</option><option value="8">8</option>
-    </select>
+    <span class="picker">
+        <select id="groups" title="How many groups" aria-label="How many groups">
+            <option value="">Auto</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+            <option value="6">6</option><option value="8">8</option>
+        </select>
+        ${ICONS.chevronDown}
+    </span>
     <button class="action" id="similar" title="Select every note that says the same thing">${ICONS.similar}<span>Find similar</span></button>
     <button class="action wide" id="demo">${ICONS.sample}<span>Try with sample notes</span></button>
     <div id="stats" class="muted small"></div>
