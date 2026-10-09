@@ -174,7 +174,7 @@ export const PANEL_BODY = `
     <button class="action" id="similar" title="Select every note that says the same thing">${ICONS.similar}<span>Find similar</span></button>
     <button class="action wide" id="demo">${ICONS.sample}<span>Try with sample notes</span></button>
     <div id="stats" class="muted small"></div>
-    <p id="credit" class="muted">Model: EmbeddingGemma 2</p>
+    <p id="credit" class="muted">Engine: EmbeddingGemma 2</p>
 </footer>
 </div>
 `;

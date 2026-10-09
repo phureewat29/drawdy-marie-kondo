@@ -124,7 +124,7 @@ describe("panel", () => {
 
     it("names the model only in a dim line at the bottom", () => {
         setup();
-        expect(document.getElementById("credit")?.textContent).toBe("Model: EmbeddingGemma 2");
+        expect(document.getElementById("credit")?.textContent).toBe("Engine: EmbeddingGemma 2");
         expect(document.getElementById("status")!.textContent).not.toMatch(/EmbeddingGemma/i);
     });
 
