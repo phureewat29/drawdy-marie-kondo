@@ -6,7 +6,7 @@ Janitor groups your notes by what they mean, finds notes by meaning, and
 spots the ones that say the same thing. It runs privately on your device, so
 your notes never leave your browser.
 
-![84 notes from a sprint retro slide into named groups, then a search for "who deserves thanks" finds the kudos notes](https://raw.githubusercontent.com/phureewat29/drawdy-janitor/main/.github/assets/demo.gif)
+![108 notes from a sprint retro slide into eight named groups, then a search for "what sparked joy" finds the happiest notes](https://raw.githubusercontent.com/phureewat29/drawdy-janitor/main/.github/assets/demo.gif)
 
 ## How it works
 
@@ -50,7 +50,8 @@ same thing. Handy for cleaning up duplicates after a brainstorm.
 1. Click the **Janitor** button, the tidy box on the right edge of the board.
 2. The first time, Janitor asks to download its AI model (about 235 MB).
    This happens once; after that it opens right away.
-3. On an empty board, press **Try with sample notes**, then **Group**.
+3. On an empty board, press **Try with sample notes** for a messy 108-note
+   retro, then **Group**.
 
 You can also right-click a selection and choose **Extension → Janitor**.
 
