@@ -20,7 +20,7 @@ export type Context = {
     /** Sends to the panel; queued until it is open. */
     tell: (message: DriverToWebview) => void;
     notify: (text: string, tone: Tone) => void;
-    /** Shows what Sensemaker is doing in the panel's status line, and how far along (0..1). */
+    /** Shows what Marie Kondo is doing in the panel's status line, and how far along (0..1). */
     busy: (text: string | null, progress?: number) => void;
 };
 

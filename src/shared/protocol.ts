@@ -1,5 +1,5 @@
 /**
- * Messages between the driver (Drawdy's shared host worker) and Sensemaker's
+ * Messages between the driver (Drawdy's shared host worker) and Marie Kondo's
  * webview, which hosts the panel UI and the embedding engine.
  *
  * The engine lives in the webview because Drawdy starts drivers from
@@ -95,7 +95,7 @@ export type DriverToWebview =
     | { type: "notice"; text: string; tone: Tone }
     /** Whether the one-time download still has to happen (asked for in the panel). */
     | { type: "setup"; needed: boolean }
-    /** What Sensemaker is doing, with how far along (0..1) when it knows. */
+    /** What Marie Kondo is doing, with how far along (0..1) when it knows. */
     | { type: "busy"; text: string | null; progress?: number };
 
 export const webviewToDriver = g.union(

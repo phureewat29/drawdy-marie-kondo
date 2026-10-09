@@ -1,11 +1,11 @@
-# Sensemaker: developer guide
+# Marie Kondo: developer guide
 
-How Sensemaker works, how to run it locally, and how to publish it. For what
+How Marie Kondo works, how to run it locally, and how to publish it. For what
 it does and how to use it, see the [README](../README.md).
 
 ## Permissions
 
-| Permission | Why Sensemaker asks |
+| Permission | Why Marie Kondo asks |
 | --- | --- |
 | `dom` | Shows the panel, its button and the right-click menu. |
 | `scene` | Reads note text, moves notes into groups and frames, highlights results, sets the selection. |
@@ -23,7 +23,7 @@ No note, image or search ever leaves your browser.
 
 ## Test locally
 
-You need neither an account nor a review to run Sensemaker locally:
+You need neither an account nor a review to run Marie Kondo locally:
 
 1. **Develop with hot reload.** Run `npm run dev`, open a **local** board on
    drawdy.io (development links are disabled on cloud boards), press `⌘K`, run
@@ -48,13 +48,13 @@ You need neither an account nor a review to run Sensemaker locally:
 5. **Start fresh.** Removing the dev server forgets its permission answers,
    but not its storage, so the download stays. To see the first-run screen
    again, run this in the drawdy.io tab's DevTools console (it deletes only
-   Sensemaker's entries, not your boards), then reload:
+   Marie Kondo's entries, not your boards), then reload:
 
    ```js
    const db = await new Promise((ok) => (indexedDB.open("drawdy-driver-kv").onsuccess = (e) => ok(e.target.result)));
    const tx = db.transaction("kv", "readwrite");
    tx.objectStore("kv").getAll().onsuccess = (e) =>
-       e.target.result.filter((r) => r.driverId === "a.sensemaker").forEach((r) => tx.objectStore("kv").delete(r.id));
+       e.target.result.filter((r) => r.driverId === "a.marie-kondo").forEach((r) => tx.objectStore("kv").delete(r.id));
    ```
 
 Teammates and outside collaborators test the same way from a clone of the repo.
@@ -64,11 +64,11 @@ Teammates and outside collaborators test the same way from a clone of the repo.
 ```
 drawdy.io
 ├── extension host: sandboxed iframe → blob: worker
-│     Sensemaker driver (src/index.ts, src/driver/)
+│     Marie Kondo driver (src/index.ts, src/driver/)
 │     reads the board, groups, lays out, animates, caches model files
 │                 ▲ messages, checked at runtime (src/shared/protocol.ts)
 │                 ▼
-└── Sensemaker webview: sandboxed srcdoc iframe
+└── Marie Kondo webview: sandboxed srcdoc iframe
       panel UI + embedding model on WebGPU (src/webview/)
 ```
 
@@ -114,7 +114,7 @@ Drawdy's origin, which accepts Blobs) and hands them back to the webview.
    Drawdy's preview transforms, which record nothing; the final positions
    and frames then land in a single update.
 
-Spectral clustering needs only the top eigenvectors, so Sensemaker finds them
+Spectral clustering needs only the top eigenvectors, so Marie Kondo finds them
 with a randomized block Krylov method in O(n²) per step rather than a full
 O(n³) eigendecomposition: grouping 1,000 notes takes about 0.6 seconds of CPU
 on an Apple M3.
@@ -132,7 +132,7 @@ npm install
 npm run dev          # dev server with hot reload (see "Test locally")
 npm test             # Jest: pure core and the panel, in jsdom
 npm run typecheck
-npm run build        # dist/a-sensemaker.drawdyx
+npm run build        # dist/a-marie-kondo.drawdyx
 npm run check        # reproduce the marketplace build
 npm run preview      # serve the marketplace build to Drawdy
 npm run icons        # regenerate src/shared/icons.ts from lucide-static
@@ -164,7 +164,7 @@ Node 24 without a build step.
 ## Publishing
 
 - `driverId` must be namespaced and must not use the reserved `drawdy.`
-  prefix; this repo uses `a.sensemaker`.
+  prefix; this repo uses `a.marie-kondo`.
 - Run `npm run check`, push, then `drawdy login` and `drawdy submit`; follow
   progress with `drawdy submissions`. See the `drawdy-cli` README in
   [drawdy-driver-protocol](https://github.com/drawdyio/drawdy-driver-protocol).
@@ -211,4 +211,4 @@ Not yet verified: Safari, Firefox, and Drawdy's light theme.
   Hugging Face, Apache 2.0, and [ONNX Runtime Web](https://onnxruntime.ai), MIT
 - [Lucide](https://lucide.dev) icons, ISC
 
-Sensemaker is MIT licensed.
+Marie Kondo is MIT licensed.

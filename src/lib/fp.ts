@@ -1,5 +1,5 @@
 /**
- * The handful of collection helpers Sensemaker needs, es-toolkit style.
+ * The handful of collection helpers Marie Kondo needs, es-toolkit style.
  *
  * Drawdy's marketplace build only lets an extension import
  * `@drawdy/driver-protocol`, so these live here instead of coming from npm.

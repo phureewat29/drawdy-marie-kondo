@@ -39,5 +39,5 @@ export const protocolError = (err: unknown): ProtocolCommandError | null =>
 /** A failure, in words for the panel. */
 export const explain = (err: unknown): string =>
     protocolError(err)?.type === "unauthorized"
-        ? "Sensemaker doesn't have permission for this. Turn it on in Extensions › Sensemaker › Manage permissions."
+        ? "Marie Kondo doesn't have permission for this. Turn it on in Extensions › Marie Kondo › Manage permissions."
         : `Something went wrong: ${err instanceof Error ? err.message : String(err)}`;

@@ -1,5 +1,5 @@
 /**
- * A sample board for trying Sensemaker: an engineering team's sprint
+ * A sample board for trying Marie Kondo: an engineering team's sprint
  * retrospective, as it looks before anyone sorts it. Seven themes; a few
  * notes say what another says in other words (for Find similar), and one
  * was written word for word by two people.

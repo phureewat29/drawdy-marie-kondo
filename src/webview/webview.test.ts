@@ -152,7 +152,7 @@ describe("panel", () => {
         const { panel } = setup();
         panel.dispatch({ type: "engine", state: { phase: "ready", device: "wasm", vision: false, adapter: null, loadMs: 900 } });
         expect(document.getElementById("notice")!.textContent).toBe(
-            "This browser can't use the GPU, so Sensemaker is slower here."
+            "This browser can't use the GPU, so Marie Kondo is slower here."
         );
     });
 
@@ -263,7 +263,7 @@ describe("panel", () => {
         expect(stats.textContent).toBe("1 of 1 selected");
     });
 
-    it("disables actions while Sensemaker is busy", () => {
+    it("disables actions while Marie Kondo is busy", () => {
         const { panel } = setup();
         const cluster = document.getElementById("cluster") as HTMLButtonElement;
         panel.dispatch({ type: "driver", message: { type: "board", items: 30, selected: 30 } });
@@ -294,7 +294,7 @@ describe("panel", () => {
         const { panel, type } = setup();
         const results = document.getElementById("results")!;
         type("fees");
-        expect(results.textContent).toBe("Searching as soon as Sensemaker is ready…");
+        expect(results.textContent).toBe("Searching as soon as Marie Kondo is ready…");
         panel.dispatch({
             type: "engine",
             state: { phase: "ready", device: "webgpu", vision: false, adapter: null, loadMs: 900 },
@@ -330,7 +330,7 @@ describe("panel", () => {
         panel.dispatch({ type: "driver", message: { type: "setup", needed: true } });
         expect(visible("setup")).toBe(true);
         expect(visible("work")).toBe(false);
-        expect(text("setup-title")).toBe("Set up Sensemaker");
+        expect(text("setup-title")).toBe("Set up Marie Kondo");
         expect(text("setup-label")).toBe("Download (235 MB)");
         // What will download, by its id, in code style.
         expect(document.querySelector("#setup code#setup-model")?.textContent).toBe(MODEL.id);
@@ -344,7 +344,7 @@ describe("panel", () => {
             type: "engine",
             state: { phase: "loading", progress: 0.5, downloadedBytes: 120e6, detail: "Downloading", file: "onnx/model_q4.onnx_data" },
         });
-        expect(text("setup-title")).toBe("Setting up Sensemaker…");
+        expect(text("setup-title")).toBe("Setting up Marie Kondo…");
         expect(text("setup-file")).toBe("onnx/model_q4.onnx_data");
         expect(visible("setup-file-line")).toBe(true);
         expect(text("setup-detail")).toBe("120 of about 235 MB · 51%");

@@ -191,7 +191,7 @@ export const clusterSelection = async (ctx: Context, k?: number): Promise<Cluste
     }
     if (distinct.length > MAX_ITEMS) {
         const max = MAX_ITEMS.toLocaleString("en-US");
-        ctx.notify(`Sensemaker groups up to ${max} notes at a time. Select fewer, then try again.`, "info");
+        ctx.notify(`Marie Kondo groups up to ${max} notes at a time. Select fewer, then try again.`, "info");
         return null;
     }
     const what = countPhrase(items);

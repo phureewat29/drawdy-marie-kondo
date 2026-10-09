@@ -1,5 +1,5 @@
 /**
- * Generates src/shared/icons.ts: the few Lucide icons Sensemaker uses, as
+ * Generates src/shared/icons.ts: the few Lucide icons Marie Kondo uses, as
  * inline SVG strings. Drawdy's marketplace build allows no npm imports, so the
  * icons are copied in rather than imported from `lucide-static`.
  *

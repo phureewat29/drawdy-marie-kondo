@@ -18,14 +18,14 @@ import { createHighlighter } from "./highlight.ts";
 import { MENU, actionForMenu, leafIds } from "./menu.ts";
 import { kvModelStore, kvSetupFlag } from "./model-store.ts";
 
-const ACTION_BUTTON_ID = "sensemaker:open";
+const ACTION_BUTTON_ID = "marie-kondo:open";
 /** Lucide "sparkles", tinted to stand out among Drawdy's monochrome buttons. */
 const ACTION_BUTTON_SVG = ICONS.sparkles
     .replace('stroke="currentColor"', 'stroke="#b69cff"')
     .replace('class="icon"', 'width="18" height="18"');
 
 export type Runtime = {
-    /** Registers Sensemaker's button, menu and subscriptions. */
+    /** Registers Marie Kondo's button, menu and subscriptions. */
     start: () => Promise<void>;
     handle: (event: DriverSubscriptionEvent) => Promise<void>;
 };
@@ -34,14 +34,14 @@ export type Runtime = {
 const REGISTER_RETRIES_MS = [800, 2000, 4000, 8000, 15000];
 
 const UNREADABLE =
-    "Sensemaker can't read this board without permission. Turn it on in Extensions › Sensemaker › Manage permissions.";
+    "Marie Kondo can't read this board without permission. Turn it on in Extensions › Marie Kondo › Manage permissions.";
 
 /** Runs `step`, reporting whether it worked; failures are logged, not thrown. */
 const attempt = (label: string, step: () => Promise<unknown>): Promise<boolean> =>
     step().then(
         () => true,
         (err: unknown) => {
-            console.warn(`[sensemaker] ${label} unavailable: ${err instanceof Error ? err.message : String(err)}`);
+            console.warn(`[marie-kondo] ${label} unavailable: ${err instanceof Error ? err.message : String(err)}`);
             return false;
         }
     );
@@ -86,7 +86,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
             report({ selected: selected.length, single: ids.length === 1 ? ids[0] : undefined });
         }, unreadable);
     }, 120);
-    // The panel's group list is the board's: every group Sensemaker made, as
+    // The panel's group list is the board's: every group Marie Kondo made, as
     // it is now. Groups Drawdy's undo or the user emptied drop out, and come
     // back on redo.
     let legend: ClusterSummary[] = [];
@@ -113,7 +113,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
     }, 400);
 
     // Scene subscriptions start with the panel, so Drawdy asks for the scene
-    // permission when the user first opens Sensemaker, not on page load.
+    // permission when the user first opens Marie Kondo, not on page load.
     let watching = false;
     const watchBoard = async () => {
         if (watching) return;
@@ -143,7 +143,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
     /** Opens the panel; false (with a word why) until the one-time download is done. */
     const ready = async () => {
         await openPanel();
-        if (!setupDone) ctx.notify("Sensemaker needs its one-time download first. Choose Download above.", "info");
+        if (!setupDone) ctx.notify("Marie Kondo needs its one-time download first. Choose Download above.", "info");
         return setupDone === true;
     };
 
@@ -164,7 +164,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
         try {
             await job();
         } catch (err) {
-            console.error("[sensemaker]", err);
+            console.error("[marie-kondo]", err);
             ctx.notify(explain(err), "error");
         }
     };
