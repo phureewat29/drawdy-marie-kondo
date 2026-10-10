@@ -1,7 +1,7 @@
 {
     "driverId": "a.janitor",
     "driverName": "Janitor",
-    "driverVersion": "0.2.1",
+    "driverVersion": "1.0.0",
     "description": "Sort, search and connect your board by meaning. Cluster sticky notes into labelled groups, search in any language, and find duplicate ideas.",
     "icon": "assets/icon.png",
     "main": "main.js",

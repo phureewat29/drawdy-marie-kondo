@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0
+
+- **Manual groups.** Press Manual and type the groups you want (*Bugs, Ideas,
+  Praise*): each note goes to the group it fits best. Add *Other* to collect
+  the notes that fit none; type one group (*Security*) to pull just those
+  notes out, and the rest go to Other.
+- Choosing how many groups is gone from the panel and the right-click menu:
+  Group decides by itself, or uses your own groups.
+
 ## 0.2.1
 
 - A shorter description in the extensions list.
