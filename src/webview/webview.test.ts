@@ -7,7 +7,7 @@ import { appIcon } from "../shared/app-icon.ts";
 import { ICONS } from "../shared/icons.ts";
 import { MODEL, TRANSFORMERS, type WebviewToDriver } from "../shared/protocol.ts";
 import { createEngine } from "./engine.ts";
-import { PANEL_BODY, PANEL_CSS } from "./markup.ts";
+import { PANEL_BODY } from "./markup.ts";
 import { createPanel } from "./panel.ts";
 
 /**
@@ -106,17 +106,62 @@ describe("panel", () => {
         expect(document.querySelectorAll("button.hit")).toHaveLength(0);
     });
 
-    it("enables clustering from four selected notes and sends the chosen group count", () => {
+    it("enables grouping from four selected notes, by meaning unless Manual is on", () => {
         const { post, panel } = setup();
         const cluster = document.getElementById("cluster") as HTMLButtonElement;
         panel.dispatch({ type: "driver", message: { type: "board", items: 30, selected: 3 } });
         expect(cluster.disabled).toBe(true);
         panel.dispatch({ type: "driver", message: { type: "board", items: 30, selected: 4 } });
         expect(cluster.disabled).toBe(false);
-
-        (document.getElementById("groups") as HTMLSelectElement).value = "5";
         cluster.click();
-        expect(post).toHaveBeenCalledWith({ type: "cluster", k: 5 });
+        expect(post).toHaveBeenCalledWith({ type: "cluster" });
+    });
+
+    it("opens a box above the buttons for the user's own groups, and groups into them", () => {
+        const { post, panel } = setup();
+        panel.dispatch({ type: "driver", message: { type: "board", items: 30, selected: 8 } });
+        const cluster = document.getElementById("cluster") as HTMLButtonElement;
+        const toggle = document.getElementById("manual-toggle") as HTMLButtonElement;
+        const box = document.getElementById("manual")!;
+        const input = document.getElementById("manual-groups") as HTMLInputElement;
+        expect([box.classList.contains("open"), box.hasAttribute("inert")]).toEqual([false, true]);
+
+        toggle.click();
+        expect([box.classList.contains("open"), box.hasAttribute("inert")]).toEqual([true, false]);
+        expect(toggle.getAttribute("aria-pressed")).toBe("true");
+        expect(document.activeElement).toBe(input);
+        // Nothing typed yet: nothing to group into.
+        expect([cluster.disabled, cluster.title]).toEqual([true, "Type your groups first"]);
+
+        input.value = "Wins, Problems";
+        input.dispatchEvent(new Event("input"));
+        expect(cluster.disabled).toBe(false);
+        cluster.click();
+        expect(post).toHaveBeenLastCalledWith({ type: "cluster", groups: "Wins, Problems" });
+
+        // Back to grouping by meaning; what was typed stays for next time.
+        toggle.click();
+        expect([box.classList.contains("open"), box.hasAttribute("inert")]).toEqual([false, true]);
+        cluster.click();
+        expect(post).toHaveBeenLastCalledWith({ type: "cluster" });
+        toggle.click();
+        expect(input.value).toBe("Wins, Problems");
+    });
+
+    it("groups on Enter in the box, and closes it on Escape", () => {
+        const { post, panel } = setup();
+        panel.dispatch({ type: "driver", message: { type: "board", items: 30, selected: 8 } });
+        const toggle = document.getElementById("manual-toggle") as HTMLButtonElement;
+        const input = document.getElementById("manual-groups") as HTMLInputElement;
+        toggle.click();
+        input.value = "Security, Other";
+        input.dispatchEvent(new Event("input"));
+        input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }));
+        expect(post).toHaveBeenLastCalledWith({ type: "cluster", groups: "Security, Other" });
+
+        input.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+        expect(toggle.getAttribute("aria-pressed")).toBe("false");
+        expect(document.activeElement).toBe(toggle);
     });
 
     it("shows a status line only while getting ready, then gets out of the way", () => {
@@ -150,12 +195,6 @@ describe("panel", () => {
         expect(parsed.querySelector("parsererror")).toBeNull();
         expect(parsed.documentElement.getAttribute("width")).toBe("20");
         expect(document.querySelector("#setup .mark svg")?.getAttribute("width")).toBe("36");
-    });
-
-    it("draws the group count's chevron itself, not the browser's", () => {
-        setup();
-        expect(document.querySelector(".picker > select#groups + svg.icon")).not.toBeNull();
-        expect(PANEL_CSS).toMatch(/#groups \{[^}]*appearance: none/);
     });
 
     it("names the model only in a dim line at the bottom", () => {

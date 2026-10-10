@@ -107,8 +107,9 @@ main { flex: 1; overflow-y: auto; padding: 0 8px 8px; }
 #notice.error { color: var(--drawdy-destructive, #ef4444); }
 #notice.success { color: var(--drawdy-success, #16a34a); }
 
-footer { padding: 10px 14px 12px; border-top: 1px solid var(--drawdy-border, #e5e5e5); display: grid; grid-template-columns: 1fr auto auto; gap: 8px; }
-footer .wide { grid-column: 1 / -1; }
+footer { padding: 10px 14px 12px; border-top: 1px solid var(--drawdy-border, #e5e5e5); }
+.actions { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; }
+.actions .wide { grid-column: 1 / -1; }
 .action {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;
     height: 34px; padding: 0 10px; border-radius: var(--drawdy-radius-md, 8px); font-weight: 600; cursor: pointer;
@@ -123,20 +124,25 @@ footer .wide { grid-column: 1 / -1; }
 .action.quiet:not(:disabled):hover { color: var(--drawdy-foreground, #111); filter: none; }
 .action:disabled { opacity: .45; cursor: default; }
 .action:not(:disabled):hover { filter: brightness(1.06); }
-/* How many groups: a native select drawn like the buttons beside it, with the panel's own chevron. */
-.picker { position: relative; display: inline-flex; min-width: 0; }
-.picker:hover { filter: brightness(1.06); }
-.picker > .icon {
-    position: absolute; right: 9px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
-    color: var(--drawdy-muted-foreground, #777); pointer-events: none;
+/* Manual: the user's own groups, typed in a box that opens above the buttons. It sits outside
+   their grid, so closed it takes no room at all; its clipped area reaches 4px past the input on
+   every side, so the input's focus ring shows. */
+.manual { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .2s ease, opacity .15s ease; }
+.manual.open { grid-template-rows: 1fr; opacity: 1; }
+.manual > div { min-height: 0; overflow: hidden; margin: 0 -4px; padding: 0 4px; }
+.manual-body { padding: 4px 0 8px; }
+#manual-groups {
+    display: block; width: 100%; height: 34px; padding: 0 11px; font: inherit; outline: none;
+    color: var(--drawdy-foreground, #111); background: var(--drawdy-surface, #fff);
+    border: 1px solid var(--drawdy-border, #e5e5e5); border-radius: var(--drawdy-radius-md, 8px);
 }
-#groups {
-    appearance: none; -webkit-appearance: none; margin: 0; min-width: 0;
-    height: 34px; padding: 0 29px 0 11px; border-radius: var(--drawdy-radius-md, 8px);
-    font: inherit; font-weight: 600; cursor: pointer;
-    color: var(--drawdy-foreground, #111); background: var(--drawdy-surface, #fff); border: 1px solid var(--drawdy-border, #e5e5e5);
+#manual-groups::placeholder { color: var(--drawdy-muted-foreground, #888); }
+#manual-groups:focus-visible { box-shadow: 0 0 0 2px var(--drawdy-background, #fff), 0 0 0 4px var(--drawdy-ring, #6366f1); }
+#manual-hint { margin: 6px 2px 0; }
+.action[aria-pressed="true"] {
+    border-color: var(--drawdy-primary, #6366f1);
+    background: color-mix(in srgb, var(--drawdy-primary, #6366f1) 14%, var(--drawdy-surface, #fff));
 }
-#groups:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--drawdy-background, #fff), 0 0 0 4px var(--drawdy-ring, #6366f1); }
 #stats { grid-column: 1 / -1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #credit { grid-column: 1 / -1; margin: -4px 0 0; text-align: center; font-size: 10px; opacity: .7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 `;
@@ -176,19 +182,20 @@ export const PANEL_BODY = `
 </div>
 <div id="notice" role="status" aria-live="polite" hidden></div>
 <footer>
-    <button class="action primary" id="cluster" title="Sort the selected notes into groups by meaning">${ICONS.group}<span>Group</span></button>
-    <span class="picker">
-        <select id="groups" title="How many groups" aria-label="How many groups">
-            <option value="">Auto</option>
-            <option value="3">3</option><option value="4">4</option><option value="5">5</option>
-            <option value="6">6</option><option value="8">8</option>
-        </select>
-        ${ICONS.chevronDown}
-    </span>
-    <button class="action" id="similar" title="Select every note that says the same thing">${ICONS.similar}<span>Find similar</span></button>
-    <button class="action wide" id="demo">${ICONS.sample}<span>Try with sample notes</span></button>
-    <div id="stats" class="muted small"></div>
-    <p id="credit" class="muted">Engine: EmbeddingGemma 2</p>
+    <div id="manual" class="manual" inert>
+        <div><div class="manual-body">
+            <input id="manual-groups" type="text" placeholder="e.g. Meetings, Security, Other" autocomplete="off" spellcheck="false" aria-label="Your groups, separated by commas" aria-describedby="manual-hint" />
+            <p id="manual-hint" class="muted small">Separate with commas. Add Other for the rest.</p>
+        </div></div>
+    </div>
+    <div class="actions">
+        <button class="action primary" id="cluster" title="Sort the selected notes into groups by meaning">${ICONS.group}<span>Group</span></button>
+        <button class="action" id="manual-toggle" aria-pressed="false" aria-expanded="false" aria-controls="manual" title="Type your own groups">Manual</button>
+        <button class="action" id="similar" title="Select every note that says the same thing">${ICONS.similar}<span>Find similar</span></button>
+        <button class="action wide" id="demo">${ICONS.sample}<span>Try with sample notes</span></button>
+        <div id="stats" class="muted small"></div>
+        <p id="credit" class="muted">Engine: EmbeddingGemma 2</p>
+    </div>
 </footer>
 </div>
 `;

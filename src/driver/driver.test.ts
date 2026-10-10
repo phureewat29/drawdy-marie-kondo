@@ -5,6 +5,7 @@ import { createBoardCache, framesLeftEmpty, MARK, readBoardSummary, type BoardIt
 import { focus } from "./camera.ts";
 import type { Channel } from "./channel.ts";
 import type { Ddp } from "./ddp.ts";
+import { clusterSelection } from "./actions/cluster.ts";
 import { createSearch } from "./actions/search.ts";
 import type { Context } from "./context.ts";
 import { createEmbeddings } from "./embeddings.ts";
@@ -429,6 +430,98 @@ describe("board", () => {
         expect(await framesLeftEmpty(ddp, moving)).toEqual([
             { id: "f1", rect: { x: 0, y: 0, width: 500, height: 400 }, label: "Group f1" },
         ]);
+    });
+});
+
+describe("grouping into the user's own groups", () => {
+    /** Six notes on a board with a security, a speed and an unrelated theme. */
+    const board = () => {
+        const notes = [
+            ["s1", "Passwords leaked in a public commit", [1, 0.1, 0]],
+            ["s2", "Turn on two-factor login", [1, 0, 0.1]],
+            ["p1", "The dashboard is slow", [0.1, 1, 0]],
+            ["p2", "Search lags under load", [0, 1, 0.1]],
+            ["o1", "Who took my charger?", [0, 0.1, 1]],
+            ["o2", "Happy birthday Alex!", [0.1, 0, 1]],
+        ] as const;
+        const vectorOf = new Map<string, Vec>(notes.map(([, text, v]) => [text, Float32Array.from(v)]));
+        const elements = notes.map(([id, text], i) => ({
+            id,
+            type: "path",
+            componentType: "sticky-note",
+            text,
+            x: i * 120,
+            y: 0,
+            width: 100,
+            height: 100,
+            locked: false,
+            frameId: null,
+        }));
+        const { ddp, calls } = fakeDdp({
+            "command:scene:get-current-selected-drawdy-elements": () => ({ drawdyElementIds: elements.map((e) => e.id) }),
+            "command:scene:get-drawdy-elements": (req) => ({
+                drawdyElements: elements.filter((e) => !req.drawdyElementIds || req.drawdyElementIds.includes(e.id)),
+            }),
+            "command:scene:query-rect": () => ({ drawdyElements: [] }),
+            "command:scene:add-drawdy-elements": () => ({}),
+            "command:scene:clear-selection": () => undefined,
+            "command:dom:window-size": () => ({ width: 1440, height: 900 }),
+            "command:camera:fly-to-rect": () => undefined,
+            "command:scene:begin-preview": () => ({ began: [] }),
+            "command:scene:update-drawdy-elements": () => ({}),
+        });
+        const names = new Map<string, Vec>([
+            ["Security", Float32Array.from([1, 0, 0])],
+            ["Speed", Float32Array.from([0, 1, 0])],
+            ["Pizza", Float32Array.from([0, 0, 0])],
+        ]);
+        const notices: [string, string][] = [];
+        let id = 0;
+        const ctx = {
+            ddp,
+            generateId: () => `frame-${++id}`,
+            highlight: { clear: async () => undefined },
+            embeddings: {
+                items: async () => [],
+                texts: async (task: string, texts: readonly string[]) =>
+                    texts.map((t) => (task === "query" ? names.get(t)! : vectorOf.get(t)!)),
+            },
+            notify: (text: string, tone: string) => void notices.push([text, tone]),
+            busy: () => undefined,
+        } as unknown as Context;
+        return { ctx, calls, notices };
+    };
+
+    it("files each note under the group it fits, and what fits none under Other", async () => {
+        const { ctx, calls, notices } = board();
+        const groups = await clusterSelection(ctx, { groups: "Security, Speed, Other" });
+        expect(groups?.map((g) => [g.label, g.count])).toEqual([
+            ["Security", 2],
+            ["Speed", 2],
+            ["Other", 2],
+        ]);
+        const frames = calls.find((c) => c.type === "command:scene:add-drawdy-elements")!.req.elements;
+        expect(frames.map((f: { name: string }) => f.name)).toEqual(["Security", "Speed", "Other"]);
+        // Only where each note is and which frame holds it change.
+        const { updates } = calls.find((c) => c.type === "command:scene:update-drawdy-elements")!.req;
+        expect(new Set(updates.flatMap((u: { properties: object }) => Object.keys(u.properties)))).toEqual(new Set(["transform", "frameId"]));
+        const frameOf = (id: string) => updates.find((u: { drawdyElementId: string }) => u.drawdyElementId === id).properties.frameId;
+        expect([frameOf("s1"), frameOf("p1"), frameOf("o1")]).toEqual(["frame-1", "frame-2", "frame-3"]);
+        expect(notices.at(-1)).toEqual(["Sorted 6 notes into 3 groups. 2 notes fit none of your groups, so they went to Other.", "success"]);
+    });
+
+    it("moves nothing when nothing fits the one group typed", async () => {
+        const { ctx, calls, notices } = board();
+        expect(await clusterSelection(ctx, { groups: "Pizza" })).toBeNull();
+        expect(calls.some((c) => c.type === "command:scene:add-drawdy-elements")).toBe(false);
+        expect(notices.at(-1)).toEqual(["Nothing fit “Pizza”, so nothing moved.", "info"]);
+    });
+
+    it("asks for groups when only a catch-all was typed", async () => {
+        const { ctx, calls, notices } = board();
+        expect(await clusterSelection(ctx, { groups: " Other , " })).toBeNull();
+        expect(calls).toHaveLength(0);
+        expect(notices.at(-1)?.[1]).toBe("info");
     });
 });
 

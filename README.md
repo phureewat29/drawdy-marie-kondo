@@ -31,7 +31,19 @@ and each group is named after what its notes say. Only their place changes:
 every note keeps its colour and text. Sticky notes, text, shapes and photos
 can all be grouped together.
 
-Not quite right? Choose how many groups you want, or press Undo.
+Not quite right? Press Undo.
+
+### Your own groups
+
+Already know the groups you want? Press **Manual** and type them, separated
+by commas: *Bugs, Ideas, Praise*. Each note goes to the group it fits best.
+Add **Other** to collect the notes that fit none of them. Type just one
+group, like *Security*, to pull those notes out of the pile; the rest go to
+Other.
+
+Short topic names work best. Janitor matches what notes are about better
+than how they feel, so *Wins, Problems* works better than *What went well,
+What didn't*.
 
 ### Search
 

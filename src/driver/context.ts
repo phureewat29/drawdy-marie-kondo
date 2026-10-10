@@ -26,7 +26,7 @@ export type Context = {
 
 /** What the user can ask for, from the panel or the context menu. */
 export type Action =
-    | { type: "cluster"; k?: number }
+    | { type: "cluster"; groups?: string }
     | { type: "similar" }
     | { type: "open-panel" }
     | { type: "demo" };

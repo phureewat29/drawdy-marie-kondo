@@ -24,6 +24,9 @@ export type PanelEvent =
     /** The user pressed Download (or Try again). */
     | { type: "download" }
     | { type: "toggle-groups" }
+    /** Manual on or off: group into the user's own groups, or by meaning. */
+    | { type: "toggle-manual" }
+    | { type: "groups-text"; value: string }
     /** The group the user went to last, by its frame. */
     | { type: "current-group"; frameId: string };
 
@@ -47,6 +50,9 @@ export type PanelState = {
     groupsOpen: boolean;
     /** The group the user went to last, while it exists. */
     currentGroup: string | null;
+    /** Group into the groups the user typed (`groupsText`), instead of by meaning. */
+    manual: boolean;
+    groupsText: string;
     notice: { id: number; text: string; tone: Tone } | null;
 };
 
@@ -96,6 +102,8 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         suggestions: [],
         groupsOpen: false,
         currentGroup: null,
+        manual: false,
+        groupsText: "",
         notice: null,
     };
 
@@ -120,6 +128,10 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
             }
             case "toggle-groups":
                 return { ...s, groupsOpen: !s.groupsOpen };
+            case "toggle-manual":
+                return { ...s, manual: !s.manual };
+            case "groups-text":
+                return { ...s, groupsText: e.value };
             case "current-group":
                 return { ...s, currentGroup: e.frameId };
             case "download":
@@ -225,7 +237,9 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         groupsList: byId("groups-list"),
         notice: byId("notice"),
         cluster: byId<HTMLButtonElement>("cluster"),
-        groups: byId<HTMLSelectElement>("groups"),
+        manual: byId("manual"),
+        manualToggle: byId<HTMLButtonElement>("manual-toggle"),
+        manualGroups: byId<HTMLInputElement>("manual-groups"),
         similar: byId<HTMLButtonElement>("similar"),
         demo: byId<HTMLButtonElement>("demo"),
         stats: byId("stats"),
@@ -420,6 +434,14 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
             : `Grouping photos adds ${IMAGES_MB} MB the first time.`;
     };
 
+    /** Manual opens the box for the user's own groups above the buttons; closed, it cannot be focused. */
+    const renderManual = (s: PanelState) => {
+        el.manual.classList.toggle("open", s.manual);
+        el.manual.toggleAttribute("inert", !s.manual);
+        el.manualToggle.setAttribute("aria-pressed", String(s.manual));
+        el.manualToggle.setAttribute("aria-expanded", String(s.manual));
+    };
+
     /** Action buttons follow the selection, and wait while Janitor works. */
     const renderBoard = (s: PanelState) => {
         const { items, selected, counted } = s.board;
@@ -442,9 +464,17 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         // until the board is counted) they stay quiet text.
         el.demo.classList.toggle("primary", empty);
         el.demo.classList.toggle("quiet", !empty);
-        el.cluster.disabled = busy || selected < 4;
+        // Manual needs at least one group typed; the driver reads them properly.
+        const typed = s.groupsText.split(/[,;\n]/).some((name) => name.trim() !== "");
+        el.cluster.disabled = busy || selected < 4 || (s.manual && !typed);
         el.cluster.title =
-            selected < 4 ? "Select 4 or more notes or images first" : "Sort the selection into groups by meaning";
+            selected < 4
+                ? "Select 4 or more notes or images first"
+                : !s.manual
+                  ? "Sort the selection into groups by meaning"
+                  : typed
+                    ? "Sort the selection into your groups"
+                    : "Type your groups first";
         el.similar.disabled = busy || selected < 1;
         el.demo.disabled = busy;
     };
@@ -460,7 +490,8 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         }
         if (changed("clusters", "query", "groupsOpen", "currentGroup")) renderClusters(next);
         if (changed("notice")) renderNotice(next);
-        if (changed("board", "busy")) renderBoard(next);
+        if (changed("manual")) renderManual(next);
+        if (changed("board", "busy", "manual", "groupsText")) renderBoard(next);
     };
 
     // --- store and effects ---------------------------------------------------
@@ -498,9 +529,20 @@ export const createPanel = ({ post, document: doc, icons, model }: PanelDeps): P
         if (e.key === "Escape") setQuery("");
     });
     el.results.addEventListener("mouseleave", () => post({ type: "hover", id: null }));
-    el.cluster.addEventListener("click", () => {
-        const k = Number(el.groups.value);
-        post(k ? { type: "cluster", k } : { type: "cluster" });
+    el.cluster.addEventListener("click", () =>
+        post(state.manual ? { type: "cluster", groups: state.groupsText } : { type: "cluster" })
+    );
+    el.manualToggle.addEventListener("click", () => {
+        dispatch({ type: "toggle-manual" });
+        if (state.manual) el.manualGroups.focus();
+    });
+    el.manualGroups.addEventListener("input", () => dispatch({ type: "groups-text", value: el.manualGroups.value }));
+    el.manualGroups.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !el.cluster.disabled) el.cluster.click();
+        if (e.key === "Escape") {
+            dispatch({ type: "toggle-manual" });
+            el.manualToggle.focus();
+        }
     });
     el.similar.addEventListener("click", () => post({ type: "similar" }));
     el.demo.addEventListener("click", () => post({ type: "demo" }));

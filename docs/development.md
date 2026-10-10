@@ -94,7 +94,7 @@ Drawdy's origin, which accepts Blobs) and hands them back to the webview.
    *classification* prompt. Both views are centered (short notes share a large
    common component) and joined.
 2. Self-tuning spectral clustering (Zelnik-Manor & Perona) forms the groups;
-   the silhouette score picks how many (3 to 8) unless you choose.
+   the silhouette score picks how many (3 to 8).
 3. Group names come from the notes: keyphrases found with `Intl.Segmenter`
    (so Thai and Japanese work), ranked c-TF-IDF style, preferring short phrases
    several notes share and skipping words too general to name a group
@@ -114,6 +114,20 @@ Drawdy's origin, which accepts Blobs) and hands them back to the webview.
    Drawdy's preview transforms, which record nothing; the final positions
    and frames then land in a single update.
 
+With **Manual**, the typed groups replace steps 2 and 3. Each name is
+embedded as a search query and each note as a document, as for Search. Raw
+scores mislead: some names (*What went well*) score high against everything,
+so each name's scores are taken relative to the board, a note picks the name
+it fits best, and three rounds of k-means seeded by the names (40% the
+name's score, 60% closeness to the group's own notes, in the grouping view
+from step 1) recover notes a vague name misses. With one group, or a typed
+catch-all (*Other*, *Misc*, *Unknown*), a note must fit clearly (0.8 standard
+deviations above the board) or it goes to Other, and only clear fits shape
+the groups. With several groups and no catch-all, every note joins one: no
+rule tested could tell "fits none" from "fits weakly" (the best caught 4 to
+17% of the notes that fit none, while moving 2 to 8% of those that fit, and
+up to 26% on a retro).
+
 Spectral clustering needs only the top eigenvectors, so Janitor finds them
 with a randomized block Krylov method in O(n²) per step rather than a full
 O(n³) eigendecomposition: grouping 1,000 notes takes about 0.6 seconds of CPU
@@ -124,6 +138,15 @@ app feedback, a city-ideas board, and the sample retro. On the sample retro
 (108 notes, nine themes) the groups match the intended themes with an
 adjusted Rand index of 0.54, against 0.41 on the others. The "Find similar"
 threshold was calibrated the same way.
+
+Manual groups were calibrated on three labelled boards (the sample retro,
+60 notes of app feedback, 50 offsite-planning ideas), each with 10 off-topic
+notes added, and 28 sets of typed groups: all of a board's themes, a few of
+them, one, unrelated names, and retro formats. With every theme typed, 68 to
+78% of notes land in their own group (the cases are hard: *Code review* is a
+test or a workload note); with a few themes typed, 83 to 97% of their notes
+do. With one group, 90 to 100% of the other notes go to Other, and 0 to 20%
+of the group's own notes go there too.
 
 ## Development
 
@@ -178,8 +201,15 @@ Node 24 without a build step.
 - Photo groups are named from a fixed list of everyday concepts in English,
   so unusual subjects get the nearest general name. Images that can't be read
   (a broken link) stay where they are.
-- Grouping short notes is approximate. If the automatic grouping is off, pick
-  the number of groups yourself, or undo in Drawdy.
+- Grouping short notes is approximate. If the automatic grouping is off,
+  type your own groups with Manual, or undo in Drawdy.
+- **Your own groups** match what notes are about better than their tone, and
+  read "not" poorly: *Wins, Problems* sorts a retro well, *What went well,
+  What didn't go well* puts many complaints under "went well". With several
+  groups, every note joins one unless you add *Other*. Other takes most of
+  the notes that fit none, and some that do: 10 to 27 in 100 offline with
+  topic names, more with names the model matches poorly (with *Bugs, Feature
+  requests, Other*, every bug note went to Other).
 - **Mixed languages.** The model's grouping prompts carry some language
   signal, so a short note in another language sometimes joins a group for how
   it is phrased rather than what it is about (one of seven in a multilingual

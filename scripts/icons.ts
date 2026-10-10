@@ -23,7 +23,6 @@ const ICONS = {
     shape: "square",
     image: "image",
     download: "download",
-    chevronDown: "chevron-down",
     chevronLeft: "chevron-left",
     chevronRight: "chevron-right",
 } as const;

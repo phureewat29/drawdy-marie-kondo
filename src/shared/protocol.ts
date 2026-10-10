@@ -122,7 +122,8 @@ export const webviewToDriver = g.union(
     g.object({ type: g.literal("search"), query: g.string }),
     g.object({ type: g.literal("reveal"), id: g.string }),
     g.object({ type: g.literal("hover"), id: g.nullable(g.string) }),
-    g.object({ type: g.literal("cluster"), k: g.optional(g.number) }),
+    /** Group by meaning, or into the groups the user typed. */
+    g.object({ type: g.literal("cluster"), groups: g.optional(g.string) }),
     g.object({ type: g.literal("similar") }),
     g.object({ type: g.literal("demo") }),
     /** The user agreed to the one-time download. */

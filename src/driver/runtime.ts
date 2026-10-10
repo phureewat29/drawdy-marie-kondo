@@ -178,7 +178,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
                 return queue(() =>
                     safely(async () => {
                         if (!(await ready())) return;
-                        await clusterSelection(ctx, action.k);
+                        await clusterSelection(ctx, action);
                     })
                 );
             case "similar":
@@ -208,7 +208,7 @@ export const createRuntime = (args: Parameters<DriverModule["activate"]>[0]): Ru
             case "reveal":
                 return void search.reveal(message.id).catch(recover);
             case "cluster":
-                return void perform(message.k === undefined ? { type: "cluster" } : { type: "cluster", k: message.k });
+                return void perform(message);
             case "similar":
                 return void perform({ type: "similar" });
             case "demo":
